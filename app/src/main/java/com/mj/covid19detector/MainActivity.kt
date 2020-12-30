@@ -3,10 +3,10 @@ package com.mj.covid19detector
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.mj.covid19detector.config.SERVICE_KEY
 import com.mj.covid19detector.databinding.ActivityMainBinding
 import com.mj.covid19detector.model.MainViewModel
 import com.mj.covid19detector.net.RetrofitConnection
@@ -15,7 +15,6 @@ import org.koin.android.ext.android.inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,26 +25,35 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val binding: ActivityMainBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val viewModel: MainViewModel = ViewModelProvider(this,  MainViewModel.MainViewModelFactory()).get(MainViewModel::class.java)
+        val viewModel: MainViewModel = ViewModelProvider(
+            this,
+            MainViewModel.MainViewModelFactory()
+        ).get(MainViewModel::class.java)
 
         viewModel.btnClickListener.observe(this, Observer {
 
-
-            apiConnection.getCovidInfo(SERVICE_KEY, "1", "10", "20200310", "20200315")
+            apiConnection.getCovidInfo()
                 .enqueue(object : Callback<CovidInfo> {
 
                     override fun onResponse(
                         call: Call<CovidInfo>,
                         response: Response<CovidInfo>
                     ) {
-                        val listInfo = response.body()
-                        Log.e(TAG, "$listInfo")
+                        if (response.isSuccessful) {
+                            val listInfo = response.body()
+
+                            Toast.makeText(this@MainActivity, "통신 성공", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@MainActivity, "통신 실패", Toast.LENGTH_SHORT).show()
+                        }
+
                     }
 
                     override fun onFailure(call: Call<CovidInfo>, t: Throwable) {
-                        Log.e(TAG, "통신 실패: ${t.message.toString()}")
+                        Toast.makeText(this@MainActivity, "통신 실패", Toast.LENGTH_SHORT).show()
                     }
                 })
 

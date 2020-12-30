@@ -70,9 +70,6 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
     // Retrofit2-Gson converter
     implementation "com.squareup.retrofit2:converter-gson:$gson_converter_version"
-
-    implementation "com.squareup.retrofit2:converter-jaxb:$retrofit2_version"
-
     // Retrofit2 xml  converter
     implementation "com.squareup.retrofit2:converter-simplexml:$xml_parser_verison"
 }
