@@ -1,2 +1,2 @@
 # Covid19Detector
-toy project
+toy pro
