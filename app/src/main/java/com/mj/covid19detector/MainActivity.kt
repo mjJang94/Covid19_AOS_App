@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.mj.covid19detector.databinding.ActivityMainBinding
 import com.mj.covid19detector.model.MainViewModel
 import com.mj.covid19detector.net.RetrofitConnection
+import com.mj.covid19detector.util.XmlParser
 import com.mj.covid19detector.vo.CovidInfo
 import org.koin.android.ext.android.inject
 import retrofit2.Call
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         val binding: ActivityMainBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_main)
 
@@ -33,7 +35,10 @@ class MainActivity : AppCompatActivity() {
             MainViewModel.MainViewModelFactory()
         ).get(MainViewModel::class.java)
 
-        viewModel.btnClickListener.observe(this, Observer {
+        binding.mainViewmodel = viewModel
+        binding.lifecycleOwner = this
+
+//        viewModel.btnClickListener.observe(this, Observer {
 
             apiConnection.getCovidInfo()
                 .enqueue(object : Callback<CovidInfo> {
@@ -43,9 +48,13 @@ class MainActivity : AppCompatActivity() {
                         response: Response<CovidInfo>
                     ) {
                         if (response.isSuccessful) {
-                            val listInfo = response.body()
+                            val covidInfo = response.body()
 
                             Toast.makeText(this@MainActivity, "통신 성공", Toast.LENGTH_SHORT).show()
+
+
+                            val xmlParser = XmlParser().getData(covidInfo?.covidXmlInfo ?: "")
+
                         } else {
                             Toast.makeText(this@MainActivity, "통신 실패", Toast.LENGTH_SHORT).show()
                         }
@@ -57,10 +66,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
 
-        })
+//        })
 
-        binding.mainViewmodel = viewModel
-        binding.lifecycleOwner = this
 
     }
 }
