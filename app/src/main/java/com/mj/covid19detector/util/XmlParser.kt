@@ -26,31 +26,32 @@ class XmlParser constructor() {
                 val dBuilder = dbFactory.newDocumentBuilder()
 
                 document = dBuilder.parse(InputSource(StringReader(xmlData)))
+
+
+                document.documentElement.normalize()
+
+
+                val nodeList: NodeList = document.getElementsByTagName("item")
+
+                for (i in 0 until nodeList.length) run {
+
+                    val node: Node = nodeList.item(i)
+
+                    if (node.nodeType == Node.ELEMENT_NODE) {
+                        val element = node as Element
+                        Log.d(TAG + "누적 확진률:", getTagValue("accDefRate", element) ?: "")
+                        Log.d(TAG + "검사진행 수:", getTagValue("examCnt", element) ?: "")
+                        Log.d(TAG + "누적 검사:", getTagValue("accExamCnt", element) ?: "")
+                        Log.d(TAG + "누적 검사 완료수:", getTagValue("accExamCompCnt", element) ?: "")
+                        Log.d(TAG + "치료중인 환자 수:", getTagValue("careCnt", element) ?: "")
+                        Log.d(TAG + "완치자 수:", getTagValue("clearCnt", element) ?: "")
+                        Log.d(TAG + "사망자 수:", getTagValue("deathCnt", element) ?: "")
+                        Log.d(TAG + "확진자 수:", getTagValue("decideCnt", element) ?: "")
+                        Log.d(TAG + "데이터 등록일자:", getTagValue("createDt", element) ?: "")
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
-
-            document.documentElement.normalize()
-
-
-            val nodeList: NodeList = document.getElementsByTagName("item")
-
-            for (i in 0..nodeList.length) run {
-
-                val node: Node = nodeList.item(i)
-
-                if (node.nodeType == Node.ELEMENT_NODE) {
-                    val element = node as Element
-                    Log.d(TAG + "누적 확진률:", getTagValue("accDefRate", element))
-                    Log.d(TAG + "검사진행 수:", getTagValue("examCnt", element))
-                    Log.d(TAG + "누적 검사:", getTagValue("accExamCnt", element))
-                    Log.d(TAG + "누적 검사 완료수:", getTagValue("accExamCompCnt", element))
-                    Log.d(TAG + "치료중인 환자 수:", getTagValue("careCnt", element))
-                    Log.d(TAG + "완치자 수:", getTagValue("clearCnt", element))
-                    Log.d(TAG + "사망자 수:", getTagValue("deathCnt", element))
-                    Log.d(TAG + "확진자 수:", getTagValue("decideCnt", element))
-                    Log.d(TAG + "데이터 등록일자:", getTagValue("createDt", element))
-                }
             }
         }
     }
@@ -59,11 +60,20 @@ class XmlParser constructor() {
         tag: String,
         eElement: Element
     ): String? {
-        val nlList =
-            eElement.getElementsByTagName(tag).item(0).childNodes
-        val nValue = nlList.item(0) as Node ?: return null
+
+        if (eElement.getElementsByTagName(tag).item(0) == null){
+            return ""
+        }
+
+        val nlList = eElement.getElementsByTagName(tag).item(0).childNodes
+
+        if (nlList.item(0) == null){
+            return ""
+        }
+
+        val nValue: Node = nlList.item(0)
+
         return nValue.nodeValue
+
     }
-
-
 }
