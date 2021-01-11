@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Covid19Detector</string>
+    <string name="common_patient_status">환자 현황</string>
+    <string name="common_infected_patient">확진환자</string>
+    <string name="common_quarantine_release">격리해제</string>
+    <string name="common_under_treatment">치료중</string>
+    <string name="common_death">사망</string>
+    <string name="common_exam_status">검사 현황</string>
 </resources>

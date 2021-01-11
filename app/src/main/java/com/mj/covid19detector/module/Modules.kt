@@ -21,6 +21,7 @@ fun retrofitApiConnectionModule() = module{
             .addConverterFactory(GsonConverterFactory.create(get()))
             .build()
             .create(RetrofitConnection::class.java)
+
     }
 }
 

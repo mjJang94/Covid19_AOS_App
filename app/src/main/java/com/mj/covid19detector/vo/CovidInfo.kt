@@ -2,7 +2,7 @@ package com.mj.covid19detector.vo
 
 class CovidInfo {
 
-    var data: ArrayList<Info>? = null
+    var data: MutableList<Info>? = ArrayList()
 
     class Info {
         //누적 확진률

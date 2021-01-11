@@ -1,6 +1,7 @@
 package com.mj.covid19detector.util
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.mj.covid19detector.vo.CovidInfo
 import com.mj.covid19detector.vo.CovidRawInfo
 import org.w3c.dom.Document
@@ -15,7 +16,7 @@ class XmlParser{
 
     private val TAG = XmlParser::class.java.simpleName
     lateinit var document: Document
-    lateinit var covidInfo: CovidInfo
+
 
 
     fun getData(xmlData: String): CovidInfo{
@@ -23,6 +24,7 @@ class XmlParser{
         if (xmlData.isNotEmpty()) {
 
             try {
+                val covidInfo = CovidInfo()
 
                 val dbFactory = DocumentBuilderFactory.newInstance()
                 val dBuilder = dbFactory.newDocumentBuilder()
@@ -36,7 +38,7 @@ class XmlParser{
                 val nodeList: NodeList = document.getElementsByTagName("item")
 
                 //직전일과 대비하여 비교만 하자
-                for (i in 0 until 2) run {
+                for (i in 0 until nodeList.length) run {
 
                     val node: Node = nodeList.item(i)
 
@@ -54,6 +56,7 @@ class XmlParser{
                         tmpInfo.accExamCnt = getTagValue("accExamCnt", element) ?: ""
                         tmpInfo.accExamCompCnt = getTagValue("accExamCompCnt", element) ?: ""
 
+//                        covidInfo.data?.add(tmpInfo)
                         covidInfo.data?.add(tmpInfo)
 
 //                        Log.d(TAG + "누적 확진률:", getTagValue("accDefRate", element) ?: "")

@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="title_color">#123056</color>
+    <color name="infect_patient_color">#0F83FE</color>
+    <color name="quarantine_release_color">#0A5187</color>
+    <color name="under_treatment_color">#123056</color>
+    <color name="death_color">#6D6D6D</color>
+
+    <color name="gray">#535353</color>
 </resources>

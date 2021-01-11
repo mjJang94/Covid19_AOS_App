@@ -4,10 +4,13 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.mj.covid19detector.net.RetrofitConnection
+import com.mj.covid19detector.util.Util
 import com.mj.covid19detector.util.XmlParser
 import com.mj.covid19detector.vo.CovidInfo
 import com.mj.covid19detector.vo.CovidRawInfo
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.experimental.property.inject
@@ -15,48 +18,55 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(private val retrofitConnection: RetrofitConnection) : ViewModel(){
+class MainViewModel(private val retrofitConnection: RetrofitConnection) : ViewModel() {
 
+    private val coroutineExceptionHanlder = CoroutineExceptionHandler { coroutineContext, throwable ->
+        throwable.printStackTrace()
+    }
 
-    val covidInfo : LiveData<CovidInfo> = liveData(Dispatchers.IO){
-        emit(getData())
+    private val ioDispatchers = Dispatchers.IO + coroutineExceptionHanlder
+    private val uiDispatchers = Dispatchers.Main + coroutineExceptionHanlder
+
+    var covidInfo = MutableLiveData<CovidInfo>().apply {
+        value = CovidInfo()
     }
 
 
+    init {
+        getData()
+    }
 
 
+    private fun getData() {
 
-    private suspend fun getData(): CovidInfo = withContext(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatchers) {
 
-        var tmpData = CovidInfo()
+            retrofitConnection.getCovidInfo()
+                .enqueue(object : Callback<CovidRawInfo> {
+                    override fun onResponse(
+                        call: Call<CovidRawInfo>,
+                        response: Response<CovidRawInfo>
+                    ) {
+                        if (response.isSuccessful) {
+                            val tmpData = response.body()
 
-        retrofitConnection.getCovidInfo()
-            .enqueue(object : Callback<CovidRawInfo> {
+                            covidInfo.postValue(XmlParser().getData(tmpData?.covidXmlInfo ?: ""))
 
-                override fun onResponse(
-                    call: Call<CovidRawInfo>,
-                    response: Response<CovidRawInfo>
-                ) {
-                    if (response.isSuccessful) {
-                        val covidInfo = response.body()
-
-                        tmpData = XmlParser().getData(covidInfo?.covidXmlInfo ?: "")
-
-                    } else {
-                        tmpData = CovidInfo()
+                        } else {
+//                            covidInfo.value = CovidInfo()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<CovidRawInfo>, t: Throwable) {
-                    tmpData = CovidInfo()
-                }
-            })
+                    override fun onFailure(call: Call<CovidRawInfo>, t: Throwable) {
 
-
+                    }
+                })
+        }
     }
 
 
-     class MainViewModelFactory(val retrofitConnection: RetrofitConnection): ViewModelProvider.Factory{
+    class MainViewModelFactory(val retrofitConnection: RetrofitConnection) :
+        ViewModelProvider.Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return MainViewModel(retrofitConnection) as T
