@@ -76,9 +76,9 @@ class MainActivity : BaseActivity() {
                 examStateInitialize(binding, it)
 
             } else {
-
-                viewModel.showErrorDialog.postValue(true)
-
+                if (viewModel.beforeApiConnection.value != true) {
+                    viewModel.showErrorDialog.postValue(true)
+                }
             }
         })
     }

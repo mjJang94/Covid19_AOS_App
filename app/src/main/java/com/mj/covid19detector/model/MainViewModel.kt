@@ -35,6 +35,10 @@ class MainViewModel(private val retrofitConnection: RetrofitConnection) : ViewMo
         value = false
     }
 
+    var beforeApiConnection = MutableLiveData<Boolean>().apply {
+        value = true
+    }
+
 
     init {
         getData()
@@ -56,14 +60,18 @@ class MainViewModel(private val retrofitConnection: RetrofitConnection) : ViewMo
 
                             covidInfo.postValue(XmlParser().getData(tmpData?.covidXmlInfo ?: ""))
 
-                        } else {
-//                            covidInfo.value = CovidInfo()
                             showErrorDialog.value = false
+                            beforeApiConnection.value = false
+
+                        } else {
+                            showErrorDialog.value = true
+                            beforeApiConnection.value = false
                         }
                     }
 
                     override fun onFailure(call: Call<CovidRawInfo>, t: Throwable) {
-                        showErrorDialog.value = false
+                        showErrorDialog.value = true
+                        beforeApiConnection.value = false
                     }
                 })
         }
