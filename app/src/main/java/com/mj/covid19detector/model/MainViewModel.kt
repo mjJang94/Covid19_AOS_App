@@ -31,6 +31,10 @@ class MainViewModel(private val retrofitConnection: RetrofitConnection) : ViewMo
         value = CovidInfo()
     }
 
+    var showErrorDialog = MutableLiveData<Boolean>().apply {
+        value = false
+    }
+
 
     init {
         getData()
@@ -54,18 +58,19 @@ class MainViewModel(private val retrofitConnection: RetrofitConnection) : ViewMo
 
                         } else {
 //                            covidInfo.value = CovidInfo()
+                            showErrorDialog.value = false
                         }
                     }
 
                     override fun onFailure(call: Call<CovidRawInfo>, t: Throwable) {
-
+                        showErrorDialog.value = false
                     }
                 })
         }
     }
 
 
-    class MainViewModelFactory(val retrofitConnection: RetrofitConnection) :
+    class MainViewModelFactory(private val retrofitConnection: RetrofitConnection) :
         ViewModelProvider.Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {

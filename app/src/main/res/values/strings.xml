@@ -6,4 +6,7 @@
     <string name="common_under_treatment">치료중</string>
     <string name="common_death">사망</string>
     <string name="common_exam_status">검사 현황</string>
+    <string name="error_network_title">네트워크 통신 오류</string>
+    <string name="error_network_msg">네트워크 통신에 오류가 생겼습니다. 재시도 바랍니다.</string>
+    <string name="common_confirm">확인</string>
 </resources>

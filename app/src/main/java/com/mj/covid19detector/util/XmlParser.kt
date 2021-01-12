@@ -56,18 +56,8 @@ class XmlParser{
                         tmpInfo.accExamCnt = getTagValue("accExamCnt", element) ?: ""
                         tmpInfo.accExamCompCnt = getTagValue("accExamCompCnt", element) ?: ""
 
-//                        covidInfo.data?.add(tmpInfo)
                         covidInfo.data?.add(tmpInfo)
 
-//                        Log.d(TAG + "누적 확진률:", getTagValue("accDefRate", element) ?: "")
-//                        Log.d(TAG + "검사진행 수:", getTagValue("examCnt", element) ?: "")
-//                        Log.d(TAG + "누적 검사:", getTagValue("accExamCnt", element) ?: "")
-//                        Log.d(TAG + "누적 검사 완료수:", getTagValue("accExamCompCnt", element) ?: "")
-//                        Log.d(TAG + "치료중인 환자 수:", getTagValue("careCnt", element) ?: "")
-//                        Log.d(TAG + "완치자 수:", getTagValue("clearCnt", element) ?: "")
-//                        Log.d(TAG + "사망자 수:", getTagValue("deathCnt", element) ?: "")
-//                        Log.d(TAG + "확진자 수:", getTagValue("decideCnt", element) ?: "")
-//                        Log.d(TAG + "데이터 등록일자:", getTagValue("createDt", element) ?: "")
                     }
                 }
                 return covidInfo
